@@ -99,5 +99,20 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
 	}
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception
+    {
+        super.configure(auth);
+    }
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception{
+        http.authorizeRequests()
+            .antMatchers("/admin").hasRole("ADMIN")
+            .antMatchers("/user").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/").permitAll();
+            .and().formLogin();  
+
+    }
 
 }
