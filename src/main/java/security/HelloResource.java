@@ -8,15 +8,32 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import controllers.AuthenticationRequest;
+import controllers.AuthenticationResponse;
 
+@RestController
 @Controller
 public class HelloResource {
+    
+    @GetMapping("/") 
+    public String home(){
+        return ("<h1>Welcome<h1>");
+    }
 
+    @GetMapping("/user")
+    public String user(){
+        return("<h1>Welcome User<h1>");
+    }
+    @GetMapping("/admin")
+    public String admin(){
+        return("<h1>Welcome Admin<h1>");
+    }
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -38,10 +55,12 @@ public class HelloResource {
             } catch(BadCredentialsException e){
                 throw new Exception("Invalid Username and Password", e);
             }
-            return null;
+            
             
             final UserDetails userDetails = UserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
             final String jwt = jwtTokenUtil.generateToken(userDetails);
+            
+            return ResponseEntity.ok(new AuthenticationResponse(jwt));
             
                    
         }
